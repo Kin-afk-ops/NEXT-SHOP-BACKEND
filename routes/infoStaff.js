@@ -28,10 +28,12 @@ router.get("/:staffId", verifyTokenBossAndStaff, async (req, res) => {
 });
 
 //UPDATE
-router.put("/:id", verifyTokenBossAndStaff, async (req, res) => {
+router.put("/:staffId", verifyTokenAnhAuthorizationStaff, async (req, res) => {
+  const staffId = req.params.staffId;
+
   try {
-    const updateInfoStaff = await InfoStaffs.findByIdAndUpdate(
-      req.params.id,
+    const updateInfoStaff = await InfoStaffs.findOneAndUpdate(
+      { staffId: staffId },
       {
         $set: req.body,
       },

@@ -16,7 +16,7 @@ const verifyTokenStaff = (req, res, next) => {
 
 const verifyTokenAnhAuthorizationStaff = (req, res, next) => {
   verifyTokenStaff(req, res, () => {
-    if (req.staff.id === req.params.id || req.staff.position === "admin") {
+    if (req.staff.id === req.params.staffId && req.staff.position === "admin") {
       next();
     } else {
       res.status(403).json("You are not allowed to do that!");

@@ -17,10 +17,12 @@ router.post("/", verifyTokenAndAdminStaff, async (req, res) => {
 });
 
 //UPDATE
-router.put("/:id", verifyTokenAndAdminStaff, async (req, res) => {
+router.put("/:bookId", verifyTokenAndAdminStaff, async (req, res) => {
+  const bookId = req.params.bookId;
+
   try {
-    const updateInfoBook = await InfoBooks.findByIdAndUpdate(
-      req.params.id,
+    const updateInfoBook = await InfoBooks.findOneAndUpdate(
+      { bookId: bookId },
       {
         $set: req.body,
       },
@@ -43,9 +45,11 @@ router.get("/:bookId", async (req, res) => {
 });
 
 //DELETE
-router.delete("/:id", verifyTokenAndAdminStaff, async (req, res) => {
+router.delete("/:bookId", verifyTokenAndAdminStaff, async (req, res) => {
+  const bookId = req.params.bookId;
+
   try {
-    await InfoBooks.findByIdAndDelete(req.params.id);
+    await InfoBooks.findOneAndDelete({ bookId: bookId });
     res.status(200).json("Info books has been deleted...");
   } catch (error) {
     res.status(500).json(error);

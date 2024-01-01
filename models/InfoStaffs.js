@@ -18,7 +18,7 @@ const InfoStaffsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    sex: {
+    gender: {
       type: String,
       required: true,
     },

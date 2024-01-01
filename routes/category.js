@@ -58,7 +58,7 @@ router.delete("/:id", verifyTokenAndAdminStaff, async (req, res) => {
   }
 });
 
-//DELETE
+//DELETE ALL
 router.delete("/", verifyTokenAndAdminStaff, async (req, res) => {
   try {
     await Categories.deleteMany();
@@ -68,5 +68,4 @@ router.delete("/", verifyTokenAndAdminStaff, async (req, res) => {
   }
 });
 
-//DELETE
 module.exports = router;

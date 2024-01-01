@@ -20,9 +20,9 @@ router.post("/", async (req, res) => {
 
 //UPDATE
 
-// DELETE
+// DELETE CART
 
-router.delete("/:id", verifyTokenAnhAuthorizationUser, async (req, res) => {
+router.delete("/:id", verifyTokenUser, async (req, res) => {
   try {
     await Cart.findByIdAndDelete(req.params.id);
     res.status(200).json("Cart has been deleted...");
@@ -32,9 +32,9 @@ router.delete("/:id", verifyTokenAnhAuthorizationUser, async (req, res) => {
 });
 
 //GET USER CART
-router.get("/find/:userId", verifyTokenUser, async (req, res) => {
+router.get("/find/:id", verifyTokenAnhAuthorizationUser, async (req, res) => {
   try {
-    const cart = await Cart.findOne({ userId: req.params.userId });
+    const cart = await Cart.find({ userId: req.params.id });
 
     res.status(200).json(cart);
   } catch (error) {
@@ -42,7 +42,7 @@ router.get("/find/:userId", verifyTokenUser, async (req, res) => {
   }
 });
 
-//UPDATE
+//UPDATE CART
 router.put("/:id", verifyTokenUser, async (req, res) => {
   try {
     const newCart = req.body;
@@ -71,9 +71,9 @@ router.delete("/delete/:id/:cartId", async (req, res) => {
     }
 
     // Xoá phần tử trong mảng notify với _id tương ứng
-    cart.product.pull(cartId);
+    await cart.products.pull({ productId: cartId });
 
-    // Lưu lại thông tin người dùng
+    // Lưu lại thông tin cart
     await cart.save();
 
     res.status(200).json({ message: "Đã xoá giỏ hàng" });
