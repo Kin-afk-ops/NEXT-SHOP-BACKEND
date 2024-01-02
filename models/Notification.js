@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const NotificationSchema = new mongoose.Schema(
   {
-    startId: {
+    staffId: {
       type: String,
       required: true,
     },
@@ -12,21 +12,19 @@ const NotificationSchema = new mongoose.Schema(
       required: true,
     },
 
-    notify: [
-      {
-        title: {
-          type: String,
-          required: true,
-        },
-        path: {
-          type: String,
-        },
-        content: {
-          type: String,
-          required: true,
-        },
+    notify: {
+      title: {
+        type: String,
+        required: true,
       },
-    ],
+      path: {
+        type: String,
+      },
+      content: {
+        type: String,
+        required: true,
+      },
+    },
   },
   { timestamps: true }
 );

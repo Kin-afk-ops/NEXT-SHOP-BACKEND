@@ -52,7 +52,7 @@ app.use("/api/user", userRoute);
 app.use("/api/staff", staffRoute);
 app.use("/api/book", bookRoute);
 app.use("/api/order", orderRoute);
-app.use("/api/info", infoUserRoute);
+app.use("/api/infoUser", infoUserRoute);
 app.use("/api/infoStaff", infoStaffRoute);
 app.use("/api/infoBook", infoBookRoute);
 app.use("/api/notification", notificationRoute);
