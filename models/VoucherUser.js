@@ -2,18 +2,11 @@ const mongoose = require("mongoose");
 
 const VoucherSchema = new mongoose.Schema(
   {
-    staffId: {
+    userId: {
       type: String,
       required: true,
     },
-    type: {
-      type: String,
-    },
-    discount: {
-      type: Number,
-      required: true,
-    },
-    content: {
+    voucherId: {
       type: String,
       required: true,
     },

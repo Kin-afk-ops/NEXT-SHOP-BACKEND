@@ -14,8 +14,11 @@ const {
 const Order = require("../models/Order");
 
 //CREATE
-router.post("/", verifyTokenUser, async (req, res) => {
-  const newOrder = await Order(req.body);
+router.post("/:id", verifyTokenAnhAuthorizationUser, async (req, res) => {
+  const newOrder = await Order({
+    userId: req.params.id,
+    ...req.body,
+  });
   try {
     const saveOrder = await newOrder.save();
     res.status(200).json(saveOrder);
@@ -50,6 +53,19 @@ router.delete("/:id", verifyTokenAndAdminStaff, async (req, res) => {
     res.status(500).json(error);
   }
 });
+//DELETE FROM USER
+router.delete(
+  "/deleteAll/:userId",
+  verifyTokenAndAdminStaff,
+  async (req, res) => {
+    try {
+      await Order.deleteMany({ userId: req.params.userId });
+      res.status(200).json("Order has been deleted...");
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+);
 
 router.delete("/", verifyTokenAndAdminStaff, async (req, res) => {
   try {
@@ -60,10 +76,26 @@ router.delete("/", verifyTokenAndAdminStaff, async (req, res) => {
   }
 });
 
-//GET USER CART
-router.get("/find/:userId", verifyTokenUser, async (req, res) => {
+//GET USER ORDER
+router.get(
+  "/find/:userId",
+  verifyTokenAnhAuthorizationUser,
+  async (req, res) => {
+    try {
+      const order = await Order.find({ userId: req.params.userId });
+
+      res.status(200).json(order);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+);
+
+//GET ONE ORDER
+
+router.get("/find/product/:id", verifyTokenUser, async (req, res) => {
   try {
-    const order = await Order.findOne({ userId: req.params.userId });
+    const order = await Order.findById(req.params.id);
 
     res.status(200).json(order);
   } catch (error) {

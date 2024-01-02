@@ -1,11 +1,16 @@
 const router = require("express").Router();
 const Voucher = require("../models/Voucher");
-const { verifyTokenAnhAuthorizationStaff } = require("../jwt/verifyTokenStaff");
-const { verifyTokenUser } = require("../jwt/verifyTokenUser");
+const {
+  verifyTokenAnhAuthorizationStaff,
+  verifyTokenStaff,
+} = require("../jwt/verifyTokenStaff");
 
 //CREATE
-router.post("/", async (req, res) => {
-  const newVoucher = new Notification(req.body);
+router.post("/:staffId", verifyTokenAnhAuthorizationStaff, async (req, res) => {
+  const newVoucher = new Voucher({
+    staffId: req.params.staffId,
+    ...req.body,
+  });
 
   try {
     const saveVoucher = await newVoucher.save();
@@ -16,26 +21,49 @@ router.post("/", async (req, res) => {
 });
 
 //GET
-router.get("/:userId", verifyTokenUser, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const voucher = await Voucher.findOne({
-      userId: req.params.userId,
+    const voucher = await Voucher.find().sort({ createdAt: -1 });
+
+    res.status(200).json(voucher);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//GET FROM STAFF
+router.get("/staff/:staffId", async (req, res) => {
+  try {
+    const voucher = await Voucher.find({ staffId: req.params.staffId }).sort({
+      createdAt: -1,
     });
 
-    res.status(200).json(voucher.vouch);
+    res.status(200).json(voucher);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+// GET ONE
+router.get("/:id", async (req, res) => {
+  try {
+    const voucher = await Voucher.findById(req.params.id).sort({
+      createdAt: -1,
+    });
+
+    res.status(200).json(voucher);
   } catch (error) {
     res.status(500).json(error);
   }
 });
 
 //UPDATE
-router.put("/:id", async (req, res) => {
+router.put("/:id", verifyTokenStaff, async (req, res) => {
   try {
-    const newVouch = req.body;
-    const updateVoucher = await Notification.findByIdAndUpdate(
+    const updateVoucher = await Voucher.findByIdAndUpdate(
       req.params.id,
       {
-        $push: { vouch: newVouch },
+        $set: req.body,
       },
       { new: true }
     );
@@ -45,47 +73,31 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-//DELETE
-router.put("/delete/:id", async (req, res) => {
+//DELETE ONE
+router.delete("/:id", verifyTokenStaff, async (req, res) => {
   try {
-    await Voucher.findByIdAndUpdate(
-      req.params.id,
-      {
-        $pull: { vouch: { _id: req.body.id } },
-      },
-      { new: true }
-    );
-    res.status(200).json("Voucher đã được xoá!");
+    await Voucher.findByIdAndDelete(req.params.id);
+    res.status(200).json("Voucher has been deleted...");
   } catch (error) {
     res.status(500).json(error);
   }
 });
 
-//DELETE ALL
-router.put(
-  "/deleteAll/:id",
-  verifyTokenAnhAuthorizationStaff,
-  async (req, res) => {
-    try {
-      await Voucher.findByIdAndUpdate(
-        req.params.id,
-        {
-          vouch: [],
-        },
-        { new: true }
-      );
-      res.status(200).json("Đã xoá toàn bộ Voucher!");
-    } catch (error) {
-      res.status(500).json(error);
-    }
-  }
-);
-
-//DELETE USER
-router.delete("/:id", verifyTokenAnhAuthorizationStaff, async (req, res) => {
+//DELETE STAFF
+router.delete("/staff/:staffId", verifyTokenStaff, async (req, res) => {
   try {
-    await Voucher.delete(req.params.id);
-    res.status(200).json("Đã xoá toàn bộ Voucher");
+    await Voucher.deleteMany({ staffId: req.params.staffId });
+    res.status(200).json("Voucher has been deleted...");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//DELETE All
+router.delete("/deleteAll", verifyTokenStaff, async (req, res) => {
+  try {
+    await Voucher.deleteMany({});
+    res.status(200).json("Voucher has been deleted...");
   } catch (error) {
     res.status(500).json(error);
   }
