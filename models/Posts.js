@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const PostsSchema = new mongoose.Schema(
   {
+    staffId: {
+      type: String,
+      required: true,
+    },
     image: {
       path: {
         type: String,

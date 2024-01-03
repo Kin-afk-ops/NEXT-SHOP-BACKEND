@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const VoucherSchema = new mongoose.Schema(
+const VoucherUserSchema = new mongoose.Schema(
   {
     userId: {
       type: String,
@@ -10,8 +10,12 @@ const VoucherSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    quantity: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Voucher", VoucherSchema);
+module.exports = mongoose.model("VoucherUser", VoucherUserSchema);
