@@ -19,6 +19,8 @@ const cartRoute = require("./routes/cart");
 const requestRoute = require("./routes/request");
 const bossRoute = require("./routes/boss");
 const voucherUserRoute = require("./routes/voucherUser");
+const postRoute = require("./routes/post");
+const postContentRoute = require("./routes/postContent");
 const imageRouter = require("./routes/image");
 
 const app = express();
@@ -63,4 +65,7 @@ app.use("/api/cart", cartRoute);
 app.use("/api/request", requestRoute);
 app.use("/api/boss", bossRoute);
 app.use("/api/voucherUser", voucherUserRoute);
+app.use("/api/post", postRoute);
+app.use("/api/postContent", postContentRoute);
+
 app.use("/api/image", imageRouter);

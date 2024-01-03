@@ -34,11 +34,6 @@ const PostsSchema = new mongoose.Schema(
       required: true,
     },
 
-    content: {
-      type: String,
-      required: true,
-    },
-
     hot: {
       type: Boolean,
       default: false,
