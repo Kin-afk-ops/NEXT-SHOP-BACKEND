@@ -33,7 +33,11 @@ const BooksSchema = new mongoose.Schema(
       default: 0,
     },
     categories: {
-      type: String,
+      type: Array,
+    },
+
+    quantity: {
+      type: Number,
     },
 
     star: {

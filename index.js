@@ -21,6 +21,7 @@ const bossRoute = require("./routes/boss");
 const voucherUserRoute = require("./routes/voucherUser");
 const postRoute = require("./routes/post");
 const postContentRoute = require("./routes/postContent");
+const searchRoute = require("./routes/search");
 const imageRouter = require("./routes/image");
 
 const app = express();
@@ -66,6 +67,7 @@ app.use("/api/request", requestRoute);
 app.use("/api/boss", bossRoute);
 app.use("/api/voucherUser", voucherUserRoute);
 app.use("/api/post", postRoute);
+app.use("/api/search", searchRoute);
 app.use("/api/postContent", postContentRoute);
 
 app.use("/api/image", imageRouter);
