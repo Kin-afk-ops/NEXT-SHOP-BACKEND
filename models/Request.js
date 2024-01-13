@@ -6,6 +6,9 @@ const RequestSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
+    staffId: {
+      type: String,
+    },
     type: {
       type: String,
       required: true,
@@ -13,6 +16,11 @@ const RequestSchema = new mongoose.Schema(
     content: {
       type: String,
       require: true,
+    },
+
+    done: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

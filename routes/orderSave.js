@@ -11,33 +11,14 @@ const {
   verifyTokenUser,
   verifyTokenAnhAuthorizationUser,
 } = require("../jwt/verifyTokenUser");
-const Order = require("../models/Order");
+const OrderSave = require("../models/OrderSave");
 
 //CREATE
-router.post("/:id", verifyTokenAnhAuthorizationUser, async (req, res) => {
-  const newOrder = await Order({
-    userId: req.params.id,
-    ...req.body,
-  });
+router.post("/", verifyTokenBossAndStaff, async (req, res) => {
+  const newOrder = await OrderSave(req.body);
   try {
     const saveOrder = await newOrder.save();
     res.status(200).json(saveOrder);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
-
-//UPDATE
-router.put("/:id", verifyTokenAndAdminStaff, async (req, res) => {
-  try {
-    const updateOrder = await Order.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    );
-    res.status(200).json(updateOrder);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -54,18 +35,6 @@ router.delete("/:id", verifyTokenAndAdminStaff, async (req, res) => {
   }
 });
 //DELETE FROM USER
-router.delete(
-  "/deleteAll/:userId",
-  verifyTokenAndAdminStaff,
-  async (req, res) => {
-    try {
-      await Order.deleteMany({ userId: req.params.userId });
-      res.status(200).json("Order has been deleted...");
-    } catch (error) {
-      res.status(500).json(error);
-    }
-  }
-);
 
 router.delete("/", verifyTokenAndAdminStaff, async (req, res) => {
   try {
@@ -82,7 +51,7 @@ router.get(
   verifyTokenAnhAuthorizationUser,
   async (req, res) => {
     try {
-      const order = await Order.find({ userId: req.params.userId });
+      const order = await OrderSave.find({ userId: req.params.userId });
 
       res.status(200).json(order);
     } catch (error) {
@@ -105,7 +74,7 @@ router.get(
     let ordersPage = [];
 
     try {
-      orders = await Order.find({ staffId: req.params.staffId });
+      orders = await OrderSave.find({ staffId: req.params.staffId });
 
       if (qPage) {
         totalPage = Math.ceil(orders.length / 30);
@@ -124,7 +93,7 @@ router.get(
 
 router.get("/find/product/:id", verifyTokenUser, async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const order = await OrderSave.findById(req.params.id);
 
     res.status(200).json(order);
   } catch (error) {
@@ -143,7 +112,7 @@ router.get("/", verifyTokenAndAdminStaff, async (req, res) => {
   let ordersPage = [];
 
   try {
-    orders = await Order.find().sort({ createdAt: -1 });
+    orders = await OrderSave.find().sort({ createdAt: -1 });
 
     if (qPage) {
       totalPage = Math.ceil(orders.length / 30);
@@ -164,7 +133,7 @@ router.get("/income", verifyTokenBossAndStaff, async (req, res) => {
   const previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
 
   try {
-    const income = await Order.aggregate([
+    const income = await OrderSave.aggregate([
       { $match: { createdAt: { $gte: previousMonth } } },
       {
         $project: {

@@ -85,9 +85,23 @@ router.delete("/delete/:id/:cartId", async (req, res) => {
 
 //GET ALL
 router.get("/", verifyTokenAndAdminStaff, async (req, res) => {
+  const qPage = parseInt(req.query.qPage);
+  const firstIndex = (qPage - 1) * 30;
+  const lastIndex = qPage * 30;
+
+  let totalPage = 0;
+  let carts = [];
+  let cartsPage = [];
+
   try {
-    const carts = await Cart.find();
-    res.status(200).json(carts);
+    carts = await Cart.find().sort({ createdAt: -1 });
+    if (qPage) {
+      totalPage = Math.ceil(carts.length / 30);
+      cartsPage = carts?.slice(firstIndex, lastIndex);
+      res.status(200).json({ carts: cartsPage, totalPage: totalPage });
+    } else {
+      res.status(200).json(carts);
+    }
   } catch (error) {
     res.status(500).json(error);
   }

@@ -11,6 +11,18 @@ const PostContentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    imageContent: [
+      {
+        path: {
+          type: String,
+          required: true,
+        },
+        publicId: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

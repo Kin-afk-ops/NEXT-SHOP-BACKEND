@@ -63,7 +63,7 @@ router.delete("/", verifyTokenAndAdminStaff, async (req, res) => {
 });
 
 //GET CLIENT
-router.get("/:postId", async (req, res) => {
+router.get("/find/:postId", async (req, res) => {
   try {
     const postContent = await PostContent.findOne({
       postId: req.params.postId,

@@ -15,9 +15,27 @@ router.post("/", verifyTokenAndAdminStaff, async (req, res) => {
 
 //GET
 router.get("/", async (req, res) => {
+  const qPage = parseInt(req.query.qPage);
+
+  const firstIndex = (qPage - 1) * 30;
+  const lastIndex = qPage * 30;
+
+  let totalPage = 0;
+  let categories = [];
+  let categoriesPage = [];
   try {
-    const cats = await Categories.find();
-    res.status(200).json(cats);
+    categories = await Categories.find().sort({ createdAt: -1 });
+
+    if (qPage) {
+      totalPage = Math.ceil(categories.length / 30);
+      categoriesPage = categories?.slice(firstIndex, lastIndex);
+      res.status(200).json({
+        categories: categoriesPage,
+        totalPage: totalPage,
+      });
+    } else {
+      res.status(200).json(categories);
+    }
   } catch (err) {
     res.status(500).json(err);
   }

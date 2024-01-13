@@ -19,7 +19,7 @@ const ProductsSchema = new mongoose.Schema({
   },
 });
 
-const OrderSchema = new mongoose.Schema(
+const OrderSaveSchema = new mongoose.Schema(
   {
     staffId: {
       type: String,
@@ -51,20 +51,12 @@ const OrderSchema = new mongoose.Schema(
       type: Object,
       require: true,
     },
-    status: {
-      type: String,
-      default: "Đang chuẩn bị hàng",
-    },
+
     note: {
       type: String,
-    },
-
-    received: {
-      type: Boolean,
-      default: false,
     },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Order", OrderSchema);
+module.exports = mongoose.model("OrderSave", OrderSaveSchema);

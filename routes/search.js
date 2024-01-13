@@ -1,5 +1,9 @@
 const router = require("express").Router();
 const Books = require("../models/Books");
+const Categories = require("../models/Categories");
+const Cart = require("../models/Cart");
+const Order = require("../models/Order");
+const Posts = require("../models/Posts");
 
 router.get("/book", async (req, res) => {
   const search = req.query.search;
@@ -12,7 +16,7 @@ router.get("/book", async (req, res) => {
   let bookSearch = [];
   let bookPage = [];
   try {
-    bookSearch = await Movies.find({
+    bookSearch = await Books.find({
       name: { $regex: search, $options: "i" },
     }).sort({ createdAt: -1 });
 
@@ -24,7 +28,7 @@ router.get("/book", async (req, res) => {
   }
 });
 
-router.get("/categories", async (req, res) => {
+router.get("/category", async (req, res) => {
   const search = req.query.search;
   const qPage = parseInt(req.query.qPage);
 
@@ -42,6 +46,81 @@ router.get("/categories", async (req, res) => {
     totalPage = Math.ceil(categoriesSearch.length / 10);
     categoriesPage = categoriesSearch?.slice(firstIndex, lastIndex);
     res.status(200).json({ categories: categoriesPage, totalPage: totalPage });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//Cart
+router.get("/cart", async (req, res) => {
+  const search = req.query.search;
+  const qPage = parseInt(req.query.qPage);
+
+  const firstIndex = (qPage - 1) * 10;
+  const lastIndex = qPage * 10;
+
+  let totalPage = 0;
+  let cartsSearch = [];
+  let cartsPage = [];
+  try {
+    cartsSearch = await Cart.find({
+      userId: { $regex: search, $options: "i" },
+    }).sort({ createdAt: -1 });
+
+    totalPage = Math.ceil(cartsSearch.length / 10);
+    cartsPage = cartsSearch?.slice(firstIndex, lastIndex);
+    res.status(200).json({ carts: cartsPage, totalPage: totalPage });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//order
+router.get("/order", async (req, res) => {
+  const search = req.query.search;
+  const qPage = parseInt(req.query.qPage);
+
+  const firstIndex = (qPage - 1) * 10;
+  const lastIndex = qPage * 10;
+
+  let totalPage = 0;
+  let ordersSearch = [];
+  let ordersPage = [];
+  try {
+    ordersSearch = await Order.find({
+      $or: [
+        { userId: { $regex: search, $options: "i" } },
+        { staffId: { $regex: search, $options: "i" } },
+      ],
+    }).sort({ createdAt: -1 });
+
+    totalPage = Math.ceil(ordersSearch.length / 10);
+    ordersPage = ordersSearch?.slice(firstIndex, lastIndex);
+    res.status(200).json({ orders: ordersPage, totalPage: totalPage });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//post
+router.get("/post", async (req, res) => {
+  const search = req.query.search;
+  const qPage = parseInt(req.query.qPage);
+
+  const firstIndex = (qPage - 1) * 10;
+  const lastIndex = qPage * 10;
+
+  let totalPage = 0;
+  let postsSearch = [];
+  let postsPage = [];
+  try {
+    postsSearch = await Posts.find({
+      title: { $regex: search, $options: "i" },
+    }).sort({ createdAt: -1 });
+
+    totalPage = Math.ceil(postsSearch.length / 10);
+    postsPage = postsSearch?.slice(firstIndex, lastIndex);
+    res.status(200).json({ posts: postsPage, totalPage: totalPage });
   } catch (err) {
     res.status(500).json(err);
   }
