@@ -135,8 +135,8 @@ router.get("/find/product/:id", verifyTokenUser, async (req, res) => {
 //GET ALL
 router.get("/", verifyTokenAndAdminStaff, async (req, res) => {
   const qPage = parseInt(req.query.qPage);
-  const firstIndex = (qPage - 1) * 30;
-  const lastIndex = qPage * 30;
+  const firstIndex = (qPage - 1) * 10;
+  const lastIndex = qPage * 10;
 
   let totalPage = 0;
   let orders = [];
@@ -146,7 +146,7 @@ router.get("/", verifyTokenAndAdminStaff, async (req, res) => {
     orders = await Order.find().sort({ createdAt: -1 });
 
     if (qPage) {
-      totalPage = Math.ceil(orders.length / 30);
+      totalPage = Math.ceil(orders.length / 10);
       ordersPage = orders?.slice(firstIndex, lastIndex);
       res.status(200).json({ orders: ordersPage, totalPage: totalPage });
     } else {

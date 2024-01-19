@@ -22,10 +22,26 @@ router.post("/:staffId", verifyTokenAnhAuthorizationStaff, async (req, res) => {
 
 //GET
 router.get("/", async (req, res) => {
-  try {
-    const voucher = await Voucher.find().sort({ createdAt: -1 });
+  const qPage = parseInt(req.query.qPage);
 
-    res.status(200).json(voucher);
+  const firstIndex = (qPage - 1) * 30;
+  const lastIndex = qPage * 30;
+
+  let totalPage = 0;
+  let voucher = [];
+  let voucherPage = [];
+
+  try {
+    voucher = await Voucher.find().sort({ createdAt: -1 });
+
+    if (qPage) {
+      totalPage = Math.ceil(voucher.length / 30);
+      voucherPage = voucher?.slice(firstIndex, lastIndex);
+
+      res.status(200).json({ voucher: voucherPage, totalPage: totalPage });
+    } else {
+      res.status(200).json(voucher);
+    }
   } catch (error) {
     res.status(500).json(error);
   }

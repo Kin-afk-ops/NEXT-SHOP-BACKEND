@@ -25,6 +25,11 @@ const NotificationSchema = new mongoose.Schema(
         required: true,
       },
     },
+    read: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
   { timestamps: true }
 );

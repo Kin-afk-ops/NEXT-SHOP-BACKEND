@@ -6,6 +6,9 @@ const PostsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    auth: {
+      type: String,
+    },
     image: {
       path: {
         type: String,
@@ -41,6 +44,10 @@ const PostsSchema = new mongoose.Schema(
 
     tag: {
       type: Array,
+    },
+
+    date: {
+      type: String,
     },
   },
   { timestamps: true }

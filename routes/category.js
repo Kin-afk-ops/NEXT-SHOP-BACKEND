@@ -16,24 +16,35 @@ router.post("/", verifyTokenAndAdminStaff, async (req, res) => {
 //GET
 router.get("/", async (req, res) => {
   const qPage = parseInt(req.query.qPage);
+  const qStaff = req.query.qStaff;
 
-  const firstIndex = (qPage - 1) * 30;
-  const lastIndex = qPage * 30;
+  const firstIndex = (qPage - 1) * 10;
+  const lastIndex = qPage * 10;
 
   let totalPage = 0;
   let categories = [];
   let categoriesPage = [];
+  let staff = false;
   try {
-    categories = await Categories.find().sort({ createdAt: -1 });
-
     if (qPage) {
-      totalPage = Math.ceil(categories.length / 30);
+      if (qStaff) {
+        categories = await Categories.find({ staffId: qStaff }).sort({
+          createdAt: -1,
+        });
+        staff = true;
+      } else {
+        categories = await Categories.find().sort({ createdAt: -1 });
+      }
+
+      totalPage = Math.ceil(categories.length / 10);
       categoriesPage = categories?.slice(firstIndex, lastIndex);
       res.status(200).json({
         categories: categoriesPage,
         totalPage: totalPage,
+        staff: staff,
       });
     } else {
+      categories = await Categories.find().sort({ createdAt: -1 });
       res.status(200).json(categories);
     }
   } catch (err) {

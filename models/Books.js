@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 
 const BooksSchema = new mongoose.Schema(
   {
+    staffId: {
+      type: String,
+    },
     name: {
       type: String,
       required: true,

@@ -61,6 +61,17 @@ router.get("/find/:id", async (req, res) => {
   }
 });
 
+//GET BOOK
+router.get("/slug/:slug", async (req, res) => {
+  try {
+    const book = await Books.findOne({ slug: req.params.slug });
+
+    res.status(200).json(book);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 //GET ALL BOOK
 router.get("/", async (req, res) => {
   const qCategory = req.query.qCategory;
@@ -68,11 +79,12 @@ router.get("/", async (req, res) => {
   const qHot = req.query.qHot;
   const qPage = parseInt(req.query.qPage);
   const qSale = req.query.qSale;
+  const qStaff = req.query.qStaff;
 
   const qFrom = parseInt(req.query.qFrom);
   const qTo = parseInt(req.query.qTo);
-  const firstIndex = (qPage - 1) * 30;
-  const lastIndex = qPage * 30;
+  const firstIndex = (qPage - 1) * 10;
+  const lastIndex = qPage * 10;
 
   let totalPage = 0;
   let books = [];
@@ -108,11 +120,15 @@ router.get("/", async (req, res) => {
           $or: [{ $gte: qFrom, $lt: qTo }],
         },
       }).sort({ createdAt: -1 });
+    } else if (qStaff) {
+      books = await Books.find({
+        staffId: qStaff,
+      }).sort({ createdAt: -1 });
     } else {
       books = await Books.find().sort({ createdAt: -1 });
     }
 
-    totalPage = Math.ceil(books.length / 30);
+    totalPage = Math.ceil(books.length / 10);
     booksPage = books?.slice(firstIndex, lastIndex);
     res.status(200).json({ books: booksPage, totalPage: totalPage });
   } catch (err) {

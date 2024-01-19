@@ -6,6 +6,14 @@ const InfoUsersSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    avatar: {
+      path: {
+        type: String,
+      },
+      publicId: {
+        type: String,
+      },
+    },
     lastName: {
       type: String,
       required: true,

@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 
 const CategoriesSchema = new mongoose.Schema(
   {
+    staffId: {
+      type: String,
+    },
     name: {
       type: String,
       required: true,
@@ -10,11 +13,9 @@ const CategoriesSchema = new mongoose.Schema(
     image: {
       path: {
         type: String,
-        required: true,
       },
       publicId: {
         type: String,
-        required: true,
       },
     },
     path: {

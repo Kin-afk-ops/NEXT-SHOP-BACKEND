@@ -12,22 +12,56 @@ const {
 } = require("../jwt/verifyTokenStaff");
 
 //UPDATE
+// router.put("/updateStaff/:id", verifyTokenBossAndStaff, async (req, res) => {
+//   if (req.body.password) {
+//     req.body.password = CryptoJS.AES.encrypt(
+//       req.body.password,
+//       process.env.PASS_SEC
+//     ).toString();
+//   }
+//   try {
+//     const updateStaff = await Staffs.findByIdAndUpdate(
+//       req.params.id,
+//       {
+//         $set: req.body,
+//       },
+//       { new: true }
+//     );
+//     res.status(200).json(updateStaff);
+//   } catch (error) {
+//     res.status(500).json(error);
+//   }
+// });
+
+//UPDATE STAFF
 router.put("/updateStaff/:id", verifyTokenBossAndStaff, async (req, res) => {
-  if (req.body.password) {
-    req.body.password = CryptoJS.AES.encrypt(
-      req.body.password,
+  const staff = await Staffs.findById(req.params.id);
+  !staff && res.status(401).json("Wrong credential");
+
+  const hashedPassword = CryptoJS.AES.decrypt(
+    staff.password,
+    process.env.PASS_SEC
+  );
+  const OriginPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
+  OriginPassword !== req.body.password &&
+    res.status(401).json("Wrong credential");
+
+  if (req.body.newUser.password) {
+    req.body.newUser.password = CryptoJS.AES.encrypt(
+      req.body.newUser.password,
       process.env.PASS_SEC
     ).toString();
   }
   try {
-    const updateStaff = await Staffs.findByIdAndUpdate(
+    const updateUser = await Staffs.findByIdAndUpdate(
       req.params.id,
       {
-        $set: req.body,
+        $set: req.body.newUser,
       },
       { new: true }
     );
-    res.status(200).json(updateStaff);
+    const { password, ...others } = updateUser._doc;
+    res.status(200).json(others);
   } catch (error) {
     res.status(500).json(error);
   }

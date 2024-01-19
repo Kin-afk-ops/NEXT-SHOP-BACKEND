@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const Users = require("../models/Users");
 const { verifyTokenAndBoss } = require("../jwt/verifyTokenStaff");
 const Staffs = require("../models/Staffs");
+const Notification = require("../models/Notification");
 
 //REGISTER
 router.post("/register", async (req, res) => {
@@ -14,12 +15,34 @@ router.post("/register", async (req, res) => {
       process.env.PASS_SEC
     ).toString(),
   });
+
   try {
     const saveUser = await newUser.save();
     const { password, ...others } = saveUser._doc;
+
     res.status(200).json(others);
   } catch (err) {
     res.status(500).json(err);
+  }
+});
+
+router.post("/createNotification", async (req, res) => {
+  const newNotification = new Notification({
+    staffId: "auto",
+    userId: req.body.userId,
+    notify: {
+      title: "Chào mừng bạn đến với tôi đọc sách",
+      path: "/khach-hang/ho-so",
+      content:
+        " Hãy cập nhật thông tin để tận hưởng những quyển sách thú vị nhé!",
+    },
+  });
+
+  try {
+    const saveNotification = await newNotification.save();
+    res.status(200).json(saveNotification);
+  } catch (error) {
+    res.status(500).json(error);
   }
 });
 
