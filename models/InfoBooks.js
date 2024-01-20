@@ -5,7 +5,7 @@ const CommentsSchema = new mongoose.Schema(
     name: {
       type: String,
     },
-    start: {
+    star: {
       type: Number,
       default: 0,
     },
@@ -13,6 +13,9 @@ const CommentsSchema = new mongoose.Schema(
     like: {
       type: Number,
       default: 0,
+    },
+    content: {
+      type: String,
     },
   },
   { timestamps: true }
@@ -62,9 +65,8 @@ const InfoBooksSchema = new mongoose.Schema(
         type: Number,
         required: true,
       },
-
-      comments: [CommentsSchema],
     },
+    comments: [CommentsSchema],
   },
   { timestamps: true }
 );

@@ -34,6 +34,27 @@ router.put("/:bookId", verifyTokenAndAdminStaff, async (req, res) => {
   }
 });
 
+//Book comment
+
+router.put("/comment/:bookId", async (req, res) => {
+  const bookId = req.params.bookId;
+  const newComment = req.body;
+
+  try {
+    const updateInfoBook = await InfoBooks.findOneAndUpdate(
+      { bookId: bookId },
+      {
+        $push: { comments: newComment },
+      },
+      { new: true }
+    );
+
+    res.status(200).json(updateInfoBook);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 //GET
 router.get("/:bookId", async (req, res) => {
   try {

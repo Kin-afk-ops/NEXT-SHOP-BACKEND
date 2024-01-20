@@ -85,7 +85,7 @@ router.get(
 
 router.get("/categories", async (req, res) => {
   try {
-    const cate = await Categories.find().sort({ createdAt: -1 }).limit(10);
+    const cate = await Categories.find().sort({ createdAt: -1 }).limit(5);
 
     res.status(200).json(cate);
   } catch (error) {
