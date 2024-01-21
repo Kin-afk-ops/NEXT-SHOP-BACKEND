@@ -55,6 +55,50 @@ router.put("/comment/:bookId", async (req, res) => {
   }
 });
 
+//put like
+router.put("/comment/like/:commentId", async (req, res) => {
+  const commentId = req.params.bookId;
+
+  try {
+    const updateComment = await InfoBooks.comments.findByIdAndUpdate(
+      commentId,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+
+    res.status(200).json(updateComment);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//DELETE COMMENT
+
+router.delete("/delete/:bookId/:commentId", async (req, res) => {
+  const { bookId, commentId } = req.params;
+
+  try {
+    const infoBook = await InfoBooks.findOne({ bookId: bookId });
+
+    if (!infoBook) {
+      return res.status(404).json({ message: "infoBook not found" });
+    }
+
+    // Xoá phần tử trong mảng notify với _id tương ứng
+    infoBook.comments.pull(commentId);
+
+    // Lưu lại thông tin người dùng
+    await infoBook.save();
+
+    res.status(200).json({ message: "Đã xoá giỏ hàng" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Lỗi" });
+  }
+});
+
 //GET
 router.get("/:bookId", async (req, res) => {
   try {

@@ -4,6 +4,7 @@ const CommentsSchema = new mongoose.Schema(
   {
     name: {
       type: String,
+      required: true,
     },
     star: {
       type: Number,
@@ -11,8 +12,13 @@ const CommentsSchema = new mongoose.Schema(
     },
 
     like: {
-      type: Number,
-      default: 0,
+      value: {
+        type: Number,
+        default: 0,
+      },
+      userId: {
+        type: Array,
+      },
     },
     content: {
       type: String,
