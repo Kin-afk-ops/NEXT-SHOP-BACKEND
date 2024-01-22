@@ -24,6 +24,7 @@ const postRoute = require("./routes/post");
 const postContentRoute = require("./routes/postContent");
 const homeRoute = require("./routes/home");
 const searchRoute = require("./routes/search");
+const commentBook = require("./routes/commentBook");
 const imageRouter = require("./routes/image");
 
 const app = express();
@@ -73,5 +74,7 @@ app.use("/api/post", postRoute);
 app.use("/api/postContent", postContentRoute);
 app.use("/api/search", searchRoute);
 app.use("/api/home", homeRoute);
+app.use("/api/commentBook", commentBook);
 
+commentBook;
 app.use("/api/image", imageRouter);
