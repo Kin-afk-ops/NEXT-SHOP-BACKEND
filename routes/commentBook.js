@@ -67,7 +67,7 @@ router.get("/find/:bookId", async (req, res) => {
   let comments = [];
   let commentsPage = [];
   try {
-    if (q) {
+    if (qPage) {
       if (q === "like") {
         comments = await CommentBook.find({ bookId: req.params.bookId }).sort({
           like: -1,
@@ -76,13 +76,11 @@ router.get("/find/:bookId", async (req, res) => {
         comments = await CommentBook.find({ bookId: req.params.bookId }).sort({
           createdAt: -1,
         });
-      } else {
-        comments = await CommentBook.find().sort({ createdAt: -1 });
       }
 
       totalPage = Math.ceil(comments.length / 10);
       commentsPage = comments?.slice(firstIndex, lastIndex);
-      res.status(200).json({ comments: comments, totalPage: totalPage });
+      res.status(200).json({ comments: commentsPage, totalPage: totalPage });
     } else {
       comments = await CommentBook.find().sort({ createdAt: -1 });
       res.status(200).json(comments);

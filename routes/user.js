@@ -13,9 +13,20 @@ const {
 
 //UPDATE
 router.put("/:id", verifyTokenAnhAuthorizationUser, async (req, res) => {
-  if (req.body.password) {
-    req.body.password = CryptoJS.AES.encrypt(
-      req.body.password,
+  const user = await Users.findById(req.params.id);
+  !user && res.status(401).json("Wrong credential");
+
+  const hashedPassword = CryptoJS.AES.decrypt(
+    user.password,
+    process.env.PASS_SEC
+  );
+  const OriginPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
+  OriginPassword !== req.body.password &&
+    res.status(401).json("Wrong credential");
+
+  if (req.body.newUser.password) {
+    req.body.newUser.password = CryptoJS.AES.encrypt(
+      req.body.newUser.password,
       process.env.PASS_SEC
     ).toString();
   }
@@ -23,7 +34,7 @@ router.put("/:id", verifyTokenAnhAuthorizationUser, async (req, res) => {
     const updateUser = await Users.findByIdAndUpdate(
       req.params.id,
       {
-        $set: req.body,
+        $set: req.body.newUser,
       },
       { new: true }
     );
