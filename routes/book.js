@@ -144,13 +144,19 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/fromTo", async (req, res) => {
+router.get("/filter", async (req, res) => {
   const qCategory = req.query.qCategory;
+  const qSale = req.query.qSale;
 
   const qPage = parseInt(req.query.qPage);
 
   const qFrom = parseInt(req.query.qFrom);
-  const qTo = parseInt(req.query.qTo);
+  let qTo;
+
+  req.query.qTo === "trở lên"
+    ? (qTo = req.query.qTo)
+    : (qTo = parseInt(req.query.qTo));
+
   const firstIndex = (qPage - 1) * 20;
   const lastIndex = qPage * 20;
 
@@ -161,19 +167,51 @@ router.get("/fromTo", async (req, res) => {
     if (qCategory) {
       if (qTo === "trở lên") {
         books = await Books.find({
-          categories: {
-            $in: [qCategory],
-          },
-          price: { $gte: qFrom },
+          $and: [
+            {
+              categories: {
+                $in: [qCategory],
+              },
+            },
+            { price: { $gte: qFrom } },
+          ],
         }).sort({ createdAt: -1 });
       } else {
         books = await Books.find({
-          categories: {
-            $in: [qCategory],
-          },
-          price: {
-            $and: [{ $gte: qFrom, $lt: qTo }],
-          },
+          $and: [
+            {
+              categories: {
+                $in: [qCategory],
+              },
+            },
+            { price: { $gte: qFrom } },
+            { price: { $lt: qTo } },
+          ],
+        }).sort({ createdAt: -1 });
+      }
+    } else if (qSale) {
+      if (qTo === "trở lên") {
+        books = await Books.find({
+          $and: [
+            {
+              discount: {
+                $gte: 20,
+              },
+            },
+            { price: { $gte: qFrom } },
+          ],
+        }).sort({ createdAt: -1 });
+      } else {
+        books = await Books.find({
+          $and: [
+            {
+              discount: {
+                $gte: 20,
+              },
+            },
+            { price: { $gte: qFrom } },
+            { price: { $lt: qTo } },
+          ],
         }).sort({ createdAt: -1 });
       }
     } else {
@@ -183,17 +221,16 @@ router.get("/fromTo", async (req, res) => {
         }).sort({ createdAt: -1 });
       } else {
         books = await Books.find({
-          price: {
-            $and: [{ $gte: qFrom, $lt: qTo }],
-          },
+          $and: [{ price: { $gte: qFrom } }, { price: { $lt: qTo } }],
         }).sort({ createdAt: -1 });
       }
     }
+
     totalPage = Math.ceil(books.length / 20);
     booksPage = books?.slice(firstIndex, lastIndex);
     res.status(200).json({ books: booksPage, totalPage: totalPage });
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ err });
   }
 });
 
