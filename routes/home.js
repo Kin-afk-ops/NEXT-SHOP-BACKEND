@@ -17,15 +17,17 @@ router.get("/book", async (req, res) => {
   let books = [];
   try {
     if (qHot) {
-      books = await Books.find({ hot: true }).sort({ createdAt: -1 });
+      books = await Books.find({ hot: true }).sort({ createdAt: -1 }).limit(10);
     } else if (qSale) {
       books = await Books.find({
         discount: {
           $gte: 20,
         },
-      }).sort({ createdAt: -1 });
+      })
+        .sort({ createdAt: -1 })
+        .limit(10);
     } else {
-      books = await Books.find().sort({ createdAt: -1 });
+      books = await Books.find().sort({ createdAt: -1 }).limit(10);
     }
 
     res.status(200).json(books);

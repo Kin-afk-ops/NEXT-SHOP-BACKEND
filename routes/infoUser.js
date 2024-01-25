@@ -7,7 +7,7 @@ const {
 const { verifyTokenAndAdminStaff } = require("../jwt/verifyTokenStaff");
 
 //CREATE
-router.post("/:id", verifyTokenAnhAuthorizationUser, async (req, res) => {
+router.post("/:id", async (req, res) => {
   const newInfoUser = new InfoUsers({
     userId: req.params.id,
     ...req.body,
@@ -21,7 +21,7 @@ router.post("/:id", verifyTokenAnhAuthorizationUser, async (req, res) => {
 });
 
 //GET
-router.get("/:userId", verifyTokenAnhAuthorizationUser, async (req, res) => {
+router.get("/:userId", verifyTokenUser, async (req, res) => {
   try {
     const infoUser = await InfoUsers.findOne({ userId: req.params.userId });
     res.status(200).json(infoUser);

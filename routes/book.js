@@ -83,8 +83,8 @@ router.get("/", async (req, res) => {
 
   const qFrom = parseInt(req.query.qFrom);
   const qTo = parseInt(req.query.qTo);
-  const firstIndex = (qPage - 1) * 10;
-  const lastIndex = qPage * 10;
+  const firstIndex = (qPage - 1) * 20;
+  const lastIndex = qPage * 20;
 
   let totalPage = 0;
   let books = [];
@@ -104,9 +104,9 @@ router.get("/", async (req, res) => {
           categories: {
             $in: [qCategory],
           },
-        }).sort({ createdAt: -1 }.limit(120));
+        }).sort({ createdAt: -1 });
       } else {
-        books = await Books.find().sort({ createdAt: -1 }).limit(120);
+        books = await Books.find().sort({ createdAt: -1 });
       }
     } else if (qSale) {
       books = await Books.find({
@@ -115,11 +115,19 @@ router.get("/", async (req, res) => {
         },
       }).sort({ createdAt: -1 });
     } else if (qFrom && qTo) {
-      books = await Books.find({
-        price: {
-          $or: [{ $gte: qFrom, $lt: qTo }],
-        },
-      }).sort({ createdAt: -1 });
+      if (qTo === "trở lên") {
+        books = await Books.find({
+          price: {
+            $or: [{ $gte: qFrom }],
+          },
+        }).sort({ createdAt: -1 });
+      } else {
+        books = await Books.find({
+          price: {
+            $or: [{ $gte: qFrom, $lt: qTo }],
+          },
+        }).sort({ createdAt: -1 });
+      }
     } else if (qStaff) {
       books = await Books.find({
         staffId: qStaff,
@@ -128,7 +136,60 @@ router.get("/", async (req, res) => {
       books = await Books.find().sort({ createdAt: -1 });
     }
 
-    totalPage = Math.ceil(books.length / 10);
+    totalPage = Math.ceil(books.length / 20);
+    booksPage = books?.slice(firstIndex, lastIndex);
+    res.status(200).json({ books: booksPage, totalPage: totalPage });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get("/fromTo", async (req, res) => {
+  const qCategory = req.query.qCategory;
+
+  const qPage = parseInt(req.query.qPage);
+
+  const qFrom = parseInt(req.query.qFrom);
+  const qTo = parseInt(req.query.qTo);
+  const firstIndex = (qPage - 1) * 20;
+  const lastIndex = qPage * 20;
+
+  let totalPage = 0;
+  let books = [];
+  let booksPage = [];
+  try {
+    if (qCategory) {
+      if (qTo === "trở lên") {
+        books = await Books.find({
+          categories: {
+            $in: [qCategory],
+          },
+          price: { $gte: qFrom },
+        }).sort({ createdAt: -1 });
+      } else {
+        books = await Books.find({
+          categories: {
+            $in: [qCategory],
+          },
+          price: {
+            $and: [{ $gte: qFrom, $lt: qTo }],
+          },
+        }).sort({ createdAt: -1 });
+      }
+    } else {
+      if (qTo === "trở lên") {
+        books = await Books.find({
+          price: { $gte: qFrom },
+        }).sort({ createdAt: -1 });
+      } else {
+        books = await Books.find({
+          price: {
+            $and: [{ $gte: qFrom, $lt: qTo }],
+          },
+        }).sort({ createdAt: -1 });
+      }
+    }
+    totalPage = Math.ceil(books.length / 20);
     booksPage = books?.slice(firstIndex, lastIndex);
     res.status(200).json({ books: booksPage, totalPage: totalPage });
   } catch (err) {
