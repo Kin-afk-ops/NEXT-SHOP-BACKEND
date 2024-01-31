@@ -6,20 +6,39 @@ const CartSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    products: [
-      {
-        productId: {
-          type: String,
-        },
-        price: {
-          type: Number,
-        },
-        quantity: {
-          type: Number,
-          default: 1,
-        },
+
+    books: {
+      bookId: {
+        type: String,
       },
-    ],
+
+      name: {
+        type: String,
+      },
+
+      image: {
+        type: String,
+      },
+      price: {
+        type: Number,
+      },
+
+      discountPrice: {
+        type: Number,
+      },
+      quantity: {
+        type: Number,
+        default: 1,
+      },
+      maxQuantity: {
+        type: Number,
+      },
+    },
+
+    check: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

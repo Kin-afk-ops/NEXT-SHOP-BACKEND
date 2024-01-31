@@ -42,14 +42,43 @@ router.get("/find/:id", verifyTokenAnhAuthorizationUser, async (req, res) => {
   }
 });
 
+//GET CART CHECK
+
+router.get(
+  "/find/check/:id",
+  verifyTokenAnhAuthorizationUser,
+  async (req, res) => {
+    try {
+      const cart = await Cart.find({
+        $and: [{ userId: req.params.id }, { check: true }],
+      });
+
+      res.status(200).json(cart);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+);
+
+//GET USER CART
+router.get("/find/oneCart/:id", verifyTokenUser, async (req, res) => {
+  try {
+    const cart = await Cart.findById(req.params.id);
+
+    res.status(200).json(cart);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 //UPDATE CART
 router.put("/:id", verifyTokenUser, async (req, res) => {
   try {
-    const newCart = req.body;
+    // const newCart = req.body;
     const updateCart = await Cart.findByIdAndUpdate(
       req.params.id,
       {
-        $push: { products: newCart },
+        $set: req.body,
       },
       { new: true }
     );
@@ -60,26 +89,35 @@ router.put("/:id", verifyTokenUser, async (req, res) => {
 });
 
 //DELETE
-router.delete("/delete/:id/:cartId", async (req, res) => {
-  const { id, cartId } = req.params;
+// router.delete("/delete/:id/:cartId", async (req, res) => {
+//   const { id, cartId } = req.params;
 
+//   try {
+//     const cart = await Cart.findById(id);
+
+//     if (!cart) {
+//       return res.status(404).json({ message: "cart not found" });
+//     }
+
+//     // Xoá phần tử trong mảng notify với _id tương ứng
+//     await cart.products.pull({ productId: cartId });
+
+//     // Lưu lại thông tin cart
+//     await cart.save();
+
+//     res.status(200).json({ message: "Đã xoá giỏ hàng" });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Lỗi" });
+//   }
+// });
+
+router.delete("/:id", verifyTokenUser, async (req, res) => {
   try {
-    const cart = await Cart.findById(id);
-
-    if (!cart) {
-      return res.status(404).json({ message: "cart not found" });
-    }
-
-    // Xoá phần tử trong mảng notify với _id tương ứng
-    await cart.products.pull({ productId: cartId });
-
-    // Lưu lại thông tin cart
-    await cart.save();
-
-    res.status(200).json({ message: "Đã xoá giỏ hàng" });
+    await Cart.findByIdAndDelete(req.params.id);
+    res.status(200).json("Cart has been deleted...");
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Lỗi" });
+    res.status(500).json(error);
   }
 });
 

@@ -1,24 +1,5 @@
 const mongoose = require("mongoose");
 
-const ProductsSchema = new mongoose.Schema({
-  productId: {
-    type: String,
-  },
-  name: {
-    type: String,
-  },
-  image: {
-    type: String,
-  },
-  price: {
-    type: Number,
-  },
-  quantity: {
-    type: Number,
-    default: 1,
-  },
-});
-
 const OrderSchema = new mongoose.Schema(
   {
     staffId: {
@@ -38,7 +19,33 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    products: [ProductsSchema],
+    books: {
+      bookId: {
+        type: String,
+      },
+
+      name: {
+        type: String,
+      },
+
+      image: {
+        type: String,
+      },
+      price: {
+        type: Number,
+      },
+
+      discountPrice: {
+        type: Number,
+      },
+      quantity: {
+        type: Number,
+        default: 1,
+      },
+      maxQuantity: {
+        type: Number,
+      },
+    },
     phone: {
       type: String,
       require: true,

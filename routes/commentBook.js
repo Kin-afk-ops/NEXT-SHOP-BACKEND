@@ -82,7 +82,9 @@ router.get("/find/:bookId", async (req, res) => {
       commentsPage = comments?.slice(firstIndex, lastIndex);
       res.status(200).json({ comments: commentsPage, totalPage: totalPage });
     } else {
-      comments = await CommentBook.find().sort({ createdAt: -1 });
+      comments = await CommentBook.find({ bookId: req.params.bookId }).sort({
+        createdAt: -1,
+      });
       res.status(200).json(comments);
     }
   } catch (err) {
