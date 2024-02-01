@@ -55,8 +55,20 @@ const OrderSchema = new mongoose.Schema(
       required: true,
     },
     address: {
-      type: Object,
-      require: true,
+      province: {
+        type: String,
+      },
+
+      district: {
+        type: String,
+      },
+
+      ward: {
+        type: String,
+      },
+      address: {
+        type: String,
+      },
     },
     status: {
       type: String,

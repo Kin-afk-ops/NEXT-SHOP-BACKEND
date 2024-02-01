@@ -31,7 +31,18 @@ const InfoUsersSchema = new mongoose.Schema(
       type: String,
     },
     address: {
-      type: String,
+      province: {
+        type: String,
+      },
+      district: {
+        type: String,
+      },
+      ward: {
+        type: String,
+      },
+      address: {
+        type: String,
+      },
     },
   },
   { timestamps: true }
