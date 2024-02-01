@@ -2,6 +2,8 @@ const router = require("express").Router();
 const CryptoJS = require("crypto-js");
 const Users = require("../models/Users");
 const Books = require("../models/Books");
+const Order = require("../models/Order");
+const Notification = require("../models/Notification");
 const {
   verifyTokenAndAdminStaff,
   verifyTokenBossAndStaff,
@@ -40,6 +42,39 @@ router.put("/:id", verifyTokenAnhAuthorizationUser, async (req, res) => {
     );
     const { password, ...others } = updateUser._doc;
     res.status(200).json(others);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//Update order
+router.put("/order/:id", verifyTokenUser, async (req, res) => {
+  try {
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//Notification
+
+router.put("/notification/:id", verifyTokenUser, async (req, res) => {
+  try {
+    const updateNotification = await Notification.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+    res.status(200).json(updateNotification);
   } catch (error) {
     res.status(500).json(error);
   }

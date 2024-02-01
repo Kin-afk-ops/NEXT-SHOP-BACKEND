@@ -34,7 +34,7 @@ router.post("/createNotification", async (req, res) => {
       title: "Chào mừng bạn đến với tôi đọc sách",
       path: "/khach-hang/ho-so",
       content:
-        " Hãy cập nhật thông tin để tận hưởng những quyển sách thú vị nhé!",
+        "Hãy cập nhật thông tin để tận hưởng những quyển sách thú vị nhé!",
     },
   });
 

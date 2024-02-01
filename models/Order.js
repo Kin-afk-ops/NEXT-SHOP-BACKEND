@@ -62,6 +62,10 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       default: "Đang chuẩn bị hàng",
     },
+    requestDelete: {
+      type: Boolean,
+      default: false,
+    },
     note: {
       type: String,
     },

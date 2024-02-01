@@ -82,7 +82,25 @@ router.get(
   verifyTokenAnhAuthorizationUser,
   async (req, res) => {
     try {
-      const order = await Order.find({ userId: req.params.userId });
+      const order = await Order.find({
+        $and: [{ userId: req.params.userId }, { requestDelete: false }],
+      }).sort({ createdAt: -1 });
+
+      res.status(200).json(order);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+);
+
+router.get(
+  "/find/delete/:userId",
+  verifyTokenAnhAuthorizationUser,
+  async (req, res) => {
+    try {
+      const order = await Order.find({
+        $and: [{ userId: req.params.userId }, { requestDelete: true }],
+      }).sort({ createdAt: -1 });
 
       res.status(200).json(order);
     } catch (error) {
