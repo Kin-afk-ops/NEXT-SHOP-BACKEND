@@ -9,8 +9,8 @@ router.get("/book", async (req, res) => {
   const search = req.query.search;
   const qPage = parseInt(req.query.qPage);
 
-  const firstIndex = (qPage - 1) * 30;
-  const lastIndex = qPage * 30;
+  const firstIndex = (qPage - 1) * 20;
+  const lastIndex = qPage * 20;
 
   let totalPage = 0;
   let bookSearch = [];
@@ -20,11 +20,62 @@ router.get("/book", async (req, res) => {
       name: { $regex: search, $options: "i" },
     }).sort({ createdAt: -1 });
 
-    totalPage = Math.ceil(bookSearch.length / 30);
+    totalPage = Math.ceil(bookSearch.length / 20);
     bookPage = bookSearch?.slice(firstIndex, lastIndex);
     res.status(200).json({ books: bookPage, totalPage: totalPage });
   } catch (err) {
     res.status(500).json(err);
+  }
+});
+
+//SEARCH FILTER
+router.get("/book/filter", async (req, res) => {
+  const search = req.query.search;
+  const qSale = req.query.qSale;
+
+  const qPage = parseInt(req.query.qPage);
+
+  const qFrom = parseInt(req.query.qFrom);
+  let qTo;
+
+  req.query.qTo === "trở lên"
+    ? (qTo = req.query.qTo)
+    : (qTo = parseInt(req.query.qTo));
+
+  const firstIndex = (qPage - 1) * 20;
+  const lastIndex = qPage * 20;
+
+  let totalPage = 0;
+  let books = [];
+  let booksPage = [];
+  try {
+    if (qTo !== "trở lên") {
+      books = await Books.find({
+        $and: [
+          {
+            name: { $regex: search, $options: "i" },
+          },
+
+          { price: { $gte: qFrom } },
+          { price: { $lt: qTo } },
+        ],
+      }).sort({ createdAt: -1 });
+    } else {
+      books = await Books.find({
+        $and: [
+          {
+            name: { $regex: search, $options: "i" },
+          },
+          { price: { $gte: qFrom } },
+        ],
+      }).sort({ createdAt: -1 });
+    }
+
+    totalPage = Math.ceil(books.length / 20);
+    booksPage = books?.slice(firstIndex, lastIndex);
+    res.status(200).json({ books: booksPage, totalPage: totalPage });
+  } catch (err) {
+    res.status(500).json({ err });
   }
 });
 
