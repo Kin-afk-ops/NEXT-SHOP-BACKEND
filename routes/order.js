@@ -12,16 +12,40 @@ const {
   verifyTokenAnhAuthorizationUser,
 } = require("../jwt/verifyTokenUser");
 const Order = require("../models/Order");
+const Notification = require("../models/Notification");
 
 //CREATE
-router.post("/:id", verifyTokenAnhAuthorizationUser, async (req, res) => {
-  const newOrder = await Order({
-    userId: req.params.id,
-    ...req.body,
+router.post(
+  "/create/:id",
+  verifyTokenAnhAuthorizationUser,
+  async (req, res) => {
+    const newOrder = await Order({
+      userId: req.params.id,
+      ...req.body,
+    });
+    try {
+      const saveOrder = await newOrder.save();
+      res.status(200).json(saveOrder);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+);
+
+router.post("/noti/createNotification", verifyTokenUser, async (req, res) => {
+  const newNotification = new Notification({
+    staffId: "auto",
+    userId: req.body.userId,
+    notify: {
+      title: "Bạn vừa tạo đơn hàng",
+      path: "/khach-hang/don-hang",
+      content: "Hãy vào khu vực đơn hàng để kiểm tra ngay",
+    },
   });
+
   try {
-    const saveOrder = await newOrder.save();
-    res.status(200).json(saveOrder);
+    const saveNotification = await newNotification.save();
+    res.status(200).json(saveNotification);
   } catch (error) {
     res.status(500).json(error);
   }
