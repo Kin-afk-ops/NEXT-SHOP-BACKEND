@@ -51,6 +51,10 @@ const BooksSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
+    form: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

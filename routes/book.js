@@ -147,6 +147,7 @@ router.get("/", async (req, res) => {
 router.get("/filter", async (req, res) => {
   const qCategory = req.query.qCategory;
   const qSale = req.query.qSale;
+  const qForm = req.query.qForm;
 
   const qPage = parseInt(req.query.qPage);
 
