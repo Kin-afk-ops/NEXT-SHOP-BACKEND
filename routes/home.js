@@ -36,6 +36,18 @@ router.get("/book", async (req, res) => {
   }
 });
 
+router.get("/book/input", async (req, res) => {
+  try {
+    const books = await Books.find({ hot: true })
+      .sort({ createdAt: -1 })
+      .limit(6);
+
+    res.status(200).json(books);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 router.get("/book/cate", async (req, res) => {
   const qCategories = req.query.qCategories;
 
@@ -88,6 +100,18 @@ router.get(
 router.get("/categories", async (req, res) => {
   try {
     const cate = await Categories.find().sort({ createdAt: -1 }).limit(5);
+
+    res.status(200).json(cate);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.get("/categories/input", async (req, res) => {
+  try {
+    const cate = await Categories.find({ hot: true })
+      .sort({ createdAt: -1 })
+      .limit(4);
 
     res.status(200).json(cate);
   } catch (error) {

@@ -54,7 +54,23 @@ router.get("/", verifyTokenAndAdminStaff, async (req, res) => {
 });
 
 //UPDATE
-router.put("/:id", verifyTokenAndAdminStaff, async (req, res) => {
+router.put("/staff/:id", verifyTokenAndAdminStaff, async (req, res) => {
+  try {
+    const updateNotification = await Notification.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+    res.status(200).json(updateNotification);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//UPDATE
+router.put("/user/:id", verifyTokenUser, async (req, res) => {
   try {
     const updateNotification = await Notification.findByIdAndUpdate(
       req.params.id,

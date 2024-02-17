@@ -22,6 +22,10 @@ const CategoriesSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    hot: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
