@@ -76,5 +76,4 @@ app.use("/api/search", searchRoute);
 app.use("/api/home", homeRoute);
 app.use("/api/commentBook", commentBook);
 
-commentBook;
 app.use("/api/image", imageRouter);

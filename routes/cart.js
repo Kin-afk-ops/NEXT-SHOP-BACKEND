@@ -32,7 +32,7 @@ router.delete("/:id", verifyTokenUser, async (req, res) => {
 });
 
 //GET USER CART
-router.get("/find/:id", verifyTokenAnhAuthorizationUser, async (req, res) => {
+router.get("/find/:id", async (req, res) => {
   try {
     const cart = await Cart.find({ userId: req.params.id });
 

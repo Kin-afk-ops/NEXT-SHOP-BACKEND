@@ -8,21 +8,31 @@ const Notification = require("../models/Notification");
 
 //REGISTER
 router.post("/register", async (req, res) => {
-  const newUser = new Users({
+  const checkUser = await Users.findOne({
     phone: req.body.phone,
-    password: CryptoJS.AES.encrypt(
-      req.body.password,
-      process.env.PASS_SEC
-    ).toString(),
   });
 
-  try {
-    const saveUser = await newUser.save();
-    const { password, ...others } = saveUser._doc;
+  if (checkUser) {
+    res.status(409).json({
+      message: "User already exists",
+    });
+  } else {
+    const newUser = new Users({
+      phone: req.body.phone,
+      password: CryptoJS.AES.encrypt(
+        req.body.password,
+        process.env.PASS_SEC
+      ).toString(),
+    });
 
-    res.status(200).json(others);
-  } catch (err) {
-    res.status(500).json(err);
+    try {
+      const saveUser = await newUser.save();
+      const { password, ...others } = saveUser._doc;
+
+      res.status(200).json(others);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   }
 });
 
